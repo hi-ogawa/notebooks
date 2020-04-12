@@ -1,0 +1,7 @@
+jupyter
+numpy
+matplotlib
+numba
+pillow
+requests
+nbdime
