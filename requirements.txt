@@ -5,3 +5,5 @@ numba
 pillow
 requests
 nbdime
+pandas
+PySide2
