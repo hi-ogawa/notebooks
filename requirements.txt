@@ -7,3 +7,4 @@ requests
 nbdime
 pandas
 PySide2
+sympy
