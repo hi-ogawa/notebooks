@@ -9,3 +9,7 @@ pandas
 PySide2
 sympy
 jupyter_contrib_nbextensions
+umap-learn
+sklearn
+torch
+torchvision
