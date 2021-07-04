@@ -1,5 +1,5 @@
 # x^e (mod n)
-def pow_mod(x, e, n):
+def mod_pow(x, e, n):
     y = 1
     while e > 0:
         if e & 1:
@@ -10,8 +10,8 @@ def pow_mod(x, e, n):
 
 
 # x^-1 \in Zp
-def inv_mod(x, p):
-    return pow_mod(x, p - 2, p)
+def mod_inv(x, p):
+    return mod_pow(x, p - 2, p)
 
 
 def factorize(n):
@@ -39,7 +39,7 @@ class MillerRabin:
 
     # x^(n - 1) != 1  =>  n is composite
     def test(self, x, k, q, n):
-        y = pow_mod(x, q, n)
+        y = mod_pow(x, q, n)
         if y == 1:
             return False
         for _ in range(k):
@@ -101,22 +101,22 @@ class TonelliShanks:
             k += 1
 
         # Euler's criterion
-        if pow_mod(y, (p - 1) // 2, p) != 1:
+        if mod_pow(y, (p - 1) // 2, p) != 1:
             return None
 
         # Find non quadratic residue
         # z^((p - 1)/2) = -1
         while True:
             z = self.rng.randrange(1, p)
-            if pow_mod(z, (p - 1) // 2, p) != 1:
+            if mod_pow(z, (p - 1) // 2, p) != 1:
                 break
 
         # Tonelli Shanks algorithm
 
         # y^(q + 1) = y^q y = a y
         #           = (y^(q + 1)/2)^2 = b^2
-        a = pow_mod(y, q, p)
-        b = pow_mod(y, (q + 1) // 2, p)
+        a = mod_pow(y, q, p)
+        b = mod_pow(y, (q + 1) // 2, p)
 
         # y = (a^-1) b^2 = ((a^-1/2) b)^2
         # (accumulate the factor "a^-1/2" during the loop below)
@@ -142,7 +142,7 @@ class TonelliShanks:
             #   = a^(2^(t-1)) z^(q 2^(k-1))
             #   = a^(2^(t-1)) (z^(q 2^(k-t-1))^2)^(2^(t-1))
             #   = (a w^2)^(2^(t-1))
-            w = pow_mod(z, q * (2 ** (k - t - 1)), p)
+            w = mod_pow(z, q * (2 ** (k - t - 1)), p)
             a = a * w % p * w % p
             res = res * w % p
 
@@ -184,17 +184,11 @@ class PointBase:
 
     @classmethod
     def mod_pow(cls, x, e):
-        y = 1
-        while e > 0:
-            if e & 1:
-                y = cls.mod(y * x)
-            x = cls.mod(x * x)
-            e = e >> 1
-        return y
+        return mod_pow(x, e, cls.m)
 
     @classmethod
     def mod_inv(cls, x):
-        return cls.mod_pow(x, cls.m - 2)
+        return mod_inv(x, cls.m)
 
     @classmethod
     def mod_div(cls, x, y):
