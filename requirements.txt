@@ -13,3 +13,5 @@ umap-learn
 sklearn
 torch
 torchvision
+black
+pylint
